@@ -1,4 +1,6 @@
 using PizzeriaBackend.Data;
+using PizzeriaBackend.Services;
+using static PizzeriaBackend.Services.JwtService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,3 +30,8 @@ app.Run();
 
 builder.Services.AddSingleton<Database>();
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<JwtService>();
+
+builder.Services.AddScoped<IJwtService, JwtService>();
+

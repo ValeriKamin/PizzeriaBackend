@@ -1,70 +1,87 @@
 ﻿using NUnit.Framework;
 using Moq;
-using Pizzeria;
 using Pizzeria.Controllers;
-using Pizzeria.Data;
+using PizzeriaBackend.Data;
 using Pizzeria.Models;
 using Pizzeria.Helpers;
+using PizzeriaBackend.Services;
 using Microsoft.AspNetCore.Mvc;
-using PizzeriaBackend.Data;
+using static PizzeriaBackend.Services.JwtService;
 
 namespace Pizzeria.Tests
 {
     [TestFixture]
     public class AuthControllerTests
     {
+        private Mock<IUserRepository> _userRepoMock;
+        private Mock<JwtService> _jwtServiceMock;
+        private AuthController _controller;
+
+        [SetUp]
+        public void Setup()
+        {
+            _userRepoMock = new Mock<IUserRepository>();
+            _jwtServiceMock = new Mock<JwtService>(null);
+
+            _controller = new AuthController(_userRepoMock.Object, _jwtServiceMock.Object);
+        }
+
         [Test]
-        public void Login_WithValidCredentials_ReturnsOk()
+        public void Login_WithValidCredentials_ReturnsToken()
         {
             // Arrange
-            var user = new User
+            var testUser = new User
             {
                 Username = "admin",
                 PasswordHash = PasswordHelper.ComputeSha256Hash("123456"),
                 Role = "Admin"
             };
 
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.GetByUsername("admin")).Returns(user);
+            var userRepoMock = new Mock<IUserRepository>();
+            var jwtServiceMock = new Mock<IJwtService>();
 
-            var controller = new AuthController(mockRepo.Object);
-            var model = new LoginModel { Username = "admin", Password = "123456" };
+            userRepoMock.Setup(r => r.GetByUsername("admin")).Returns(testUser);
+            jwtServiceMock.Setup(j => j.GenerateJwtToken(testUser)).Returns("test.jwt.token");
 
-            // Act
-            var result = controller.Login(model);
+            var controller = new AuthController(userRepoMock.Object, jwtServiceMock.Object);
 
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            var response = result as OkObjectResult;
-            Assert.IsNotNull(response); //  безпечно!
+            var loginModel = new LoginModel
+            {
+                Username = "admin",
+                Password = "123456"
+            };
 
-            var responseData = response.Value as LoginResponse;
-            Assert.IsNotNull(responseData); //  безпечно!
+            var result = controller.Login(loginModel);
 
-            Assert.That(responseData.Username, Is.EqualTo("admin"));
-            Assert.That(responseData.Role, Is.EqualTo("Admin"));
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
 
+            var response = okResult.Value as LoginResponse;
+            Assert.IsNotNull(response);
+            Assert.That(response.Token, Is.EqualTo("test.jwt.token"));
         }
 
         [Test]
         public void Login_WithWrongPassword_ReturnsUnauthorized()
         {
             // Arrange
-            var user = new User
+            var testUser = new User
             {
                 Username = "admin",
-                PasswordHash = PasswordHelper.ComputeSha256Hash("correct_password"),
+                PasswordHash = PasswordHelper.ComputeSha256Hash("correctpass"),
                 Role = "Admin"
             };
 
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.GetByUsername("admin")).Returns(user);
+            _userRepoMock.Setup(r => r.GetByUsername("admin")).Returns(testUser);
 
-            var controller = new AuthController(mockRepo.Object);
-            var model = new LoginModel { Username = "admin", Password = "wrong_password" };
+            var loginModel = new LoginModel
+            {
+                Username = "admin",
+                Password = "wrongpass"
+            };
 
             // Act
-            var result = controller.Login(model);
+            var result = _controller.Login(loginModel);
 
             // Assert
             Assert.IsInstanceOf<UnauthorizedObjectResult>(result);
