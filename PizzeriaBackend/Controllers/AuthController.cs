@@ -31,11 +31,11 @@ namespace Pizzeria.Controllers
             if (hash != user.PasswordHash)
                 return Unauthorized("Невірний пароль");
 
-            return Ok(new
+            return Ok(new LoginResponse
             {
-                message = "Авторизація успішна",
-                user.Username,
-                user.Role
+                Message = "Авторизація успішна",
+                Username = user.Username,
+                Role = user.Role
             });
         }
     }

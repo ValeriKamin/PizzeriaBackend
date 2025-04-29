@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Moq;
 using Pizzeria;
 using Pizzeria.Controllers;
@@ -36,8 +36,14 @@ namespace Pizzeria.Tests
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var response = result as OkObjectResult;
-            Assert.That(((dynamic)response.Value).username, Is.EqualTo("admin"));
-            Assert.That(((dynamic)response.Value).role, Is.EqualTo("Admin"));
+            Assert.IsNotNull(response); //  безпечно!
+
+            var responseData = response.Value as LoginResponse;
+            Assert.IsNotNull(responseData); //  безпечно!
+
+            Assert.That(responseData.Username, Is.EqualTo("admin"));
+            Assert.That(responseData.Role, Is.EqualTo("Admin"));
+
         }
 
         [Test]
