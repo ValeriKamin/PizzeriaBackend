@@ -1,17 +1,20 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 
-
+namespace PizzeriaBackend.Data
+{
     public class Database
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
-        public Database()
+        public Database(IConfiguration configuration)
         {
-            connectionString = "server=localhost;user=root;password=123456789;database=pizzahome;";
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
         public MySqlConnection GetConnection()
         {
-            return new MySqlConnection(connectionString);
+            return new MySqlConnection(_connectionString);
         }
     }
+}

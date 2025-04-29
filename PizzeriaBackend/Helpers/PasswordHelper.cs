@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Pizzeria.Helpres
+namespace Pizzeria.Helpers
 {
     public static class PasswordHelper
     {

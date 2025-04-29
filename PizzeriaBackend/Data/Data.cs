@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Pizzeria.Models;
+using PizzeriaBackend.Data;
 
 namespace Pizzeria.Data
 {
@@ -7,9 +8,9 @@ namespace Pizzeria.Data
     {
         private readonly Database _db;
 
-        public FoodRepository()
+        public FoodRepository(Database db)
         {
-            _db = new Database();
+            _db = db;
         }
 
         public List<Food> GetAllFoods()

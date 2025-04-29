@@ -4,7 +4,8 @@ using Pizzeria.Models;
 using Pizzeria.Data;
 using Pizzeria.Models;
 using System.Runtime.InteropServices;
-using Pizzeria.Helpres;
+using Pizzeria.Helpers;
+using PizzeriaBackend.Data;
 
 namespace Pizzeria.Controllers
 {
@@ -12,7 +13,12 @@ namespace Pizzeria.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserRepository _userRepo = new UserRepository();
+        private readonly IUserRepository _userRepo;
+
+        public AuthController(IUserRepository userRepo)
+        {
+            _userRepo = userRepo;
+        }
 
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel model)

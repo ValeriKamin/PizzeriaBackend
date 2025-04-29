@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Pizzeria.Models;
+using PizzeriaBackend.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,14 @@ using System.Threading.Tasks;
 
 namespace Pizzeria.Data
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
-        private readonly Database _db = new Database();
+        private readonly Database _db;
+
+        public UserRepository(Database db)
+        {
+            _db = db;
+        }
 
         public User? GetByUsername(string username)
         {
