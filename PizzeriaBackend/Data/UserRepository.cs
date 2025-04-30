@@ -43,5 +43,26 @@ namespace Pizzeria.Data
 
             return null;
         }
+
+        public void CreateUser(User user)
+        {
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            string sql = @"INSERT INTO Users (Username, PasswordHash, Email, PhoneNumber, Role)
+                   VALUES (@username, @passwordHash, @email, @phone, @role)";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@username", user.Username);
+            cmd.Parameters.AddWithValue("@passwordHash", user.PasswordHash);
+            cmd.Parameters.AddWithValue("@email", user.Email);
+            cmd.Parameters.AddWithValue("@phone", user.PhoneNumber);
+            cmd.Parameters.AddWithValue("@role", user.Role);
+
+            cmd.ExecuteNonQuery();
+        }
+
     }
+
+
 }

@@ -7,6 +7,7 @@ using Pizzeria.Helpers;
 using PizzeriaBackend.Services;
 using Microsoft.AspNetCore.Mvc;
 using static PizzeriaBackend.Services.JwtService;
+using PizzeriaBackend.Models;
 
 namespace Pizzeria.Tests
 {
@@ -86,5 +87,60 @@ namespace Pizzeria.Tests
             // Assert
             Assert.That(result, Is.InstanceOf<UnauthorizedObjectResult>());
         }
+
+        [Test]
+        public void Register_NewUser_ReturnsSuccess()
+        {
+            // Arrange
+            var newUser = new RegisterModel
+            {
+                Username = "newuser",
+                Password = "123456",
+                Email = "newuser@example.com",
+                PhoneNumber = "+380000000000",
+                Role = "User"
+            };
+
+            _userRepoMock.Setup(r => r.GetByUsername("newuser")).Returns((User?)null); 
+            _userRepoMock.Setup(r => r.CreateUser(It.IsAny<User>()));
+
+            var controller = new AuthController(_userRepoMock.Object, _jwtServiceMock.Object);
+
+            // Act
+            var result = controller.Register(newUser);
+
+            // Assert
+            var okResult = result as OkObjectResult; 
+            Assert.That(okResult, Is.Not.Null);
+
+            var response = okResult.Value as RegisterResponse;
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.Message, Is.EqualTo("Успішна реєстрація"));
+
+            _userRepoMock.Verify(r => r.CreateUser(It.IsAny<User>()), Times.Once);
+        }
+
+
+        [Test]
+        public void Register_ExistingUsername_ReturnsConflict()
+        {
+            // Arrange
+            var registerModel = new RegisterModel
+            {
+                Username = "admin",
+                Password = "123456"
+            };
+
+            _userRepoMock.Setup(r => r.GetByUsername("admin")).Returns(new User());
+
+            var controller = new AuthController(_userRepoMock.Object, _jwtServiceMock.Object);
+
+            // Act
+            var result = controller.Register(registerModel);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<ConflictObjectResult>());
+        }
+
     }
 }

@@ -8,6 +8,7 @@ using Pizzeria.Helpers;
 using PizzeriaBackend.Data;
 using PizzeriaBackend.Services;
 using static PizzeriaBackend.Services.JwtService;
+using PizzeriaBackend.Models;
 
 namespace Pizzeria.Controllers
 {
@@ -46,6 +47,29 @@ namespace Pizzeria.Controllers
             });
         }
 
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterModel model)
+        {
+            var existingUser = _userRepo.GetByUsername(model.Username);
+            if (existingUser != null)
+            {
+                return Conflict(new { message = "Користувач з таким ім’ям вже існує" });
+            }
+
+            var newUser = new User
+            {
+                Username = model.Username,
+                PasswordHash = PasswordHelper.ComputeSha256Hash(model.Password),
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                Role = model.Role
+            };
+
+            _userRepo.CreateUser(newUser);
+
+            return Ok(new RegisterResponse { Message = "Успішна реєстрація" });
+        }
+
         //[HttpGet("test")]
         //public IActionResult Test()
         //{
@@ -55,5 +79,8 @@ namespace Pizzeria.Controllers
         //    });
         //}
     }
+
+
+
 }
 
