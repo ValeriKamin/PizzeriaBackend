@@ -45,6 +45,15 @@ namespace Pizzeria.Controllers
                 Token = token
             });
         }
+
+        //[HttpGet("test")]
+        //public IActionResult Test()
+        //{
+        //    return Ok(new LoginResponse
+        //    {
+        //        Message = "Авторизація успішна"
+        //    });
+        //}
     }
 }
 

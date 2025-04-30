@@ -54,10 +54,10 @@ namespace Pizzeria.Tests
             var result = controller.Login(loginModel);
 
             var okResult = result as OkObjectResult;
-            Assert.IsNotNull(okResult);
+            Assert.That(okResult, Is.Not.Null);
 
             var response = okResult.Value as LoginResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
             Assert.That(response.Token, Is.EqualTo("test.jwt.token"));
         }
 
@@ -84,7 +84,7 @@ namespace Pizzeria.Tests
             var result = _controller.Login(loginModel);
 
             // Assert
-            Assert.IsInstanceOf<UnauthorizedObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<UnauthorizedObjectResult>());
         }
     }
 }
