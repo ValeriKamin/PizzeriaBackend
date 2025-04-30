@@ -8,6 +8,7 @@ using PizzeriaBackend.Services;
 using Microsoft.AspNetCore.Mvc;
 using static PizzeriaBackend.Services.JwtService;
 using PizzeriaBackend.Models;
+using PizzeriaBackend.Controllers;
 
 namespace Pizzeria.Tests
 {
@@ -142,5 +143,40 @@ namespace Pizzeria.Tests
             Assert.That(result, Is.InstanceOf<ConflictObjectResult>());
         }
 
+    }
+
+    [TestFixture]
+    public class ReviewsControllerTests
+    {
+        [Test]
+        public void AddReview_ValidModel_CallsRepositoryAndReturnsOk()
+        {
+            // Arrange
+            var reviewModel = new ReviewModel
+            {
+                Name = "Іван",
+                Topic = "Сервіс",
+                Comment = "Все чудово!",
+                PhoneNumber = "+380111111111"
+            };
+
+            var reviewRepoMock = new Mock<IReviewRepository>();
+            var controller = new ReviewsController(reviewRepoMock.Object);
+
+            // Act
+            var result = controller.AddReview(reviewModel);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.Not.Null);
+
+            var response = okResult.Value as ReviewResponse;
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response!.Message, Is.EqualTo("Відгук додано!"));
+
+            reviewRepoMock.Verify(r => r.AddReview(It.IsAny<Review>()), Times.Once);
+        }
     }
 }

@@ -35,3 +35,7 @@ builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 
+builder.Services.AddScoped<ReviewRepository>();
+
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
