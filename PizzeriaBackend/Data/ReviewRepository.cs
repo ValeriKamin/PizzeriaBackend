@@ -29,5 +29,32 @@ namespace PizzeriaBackend.Data
 
             cmd.ExecuteNonQuery();
         }
+
+        public List<Review> GetAllReviews()
+        {
+            var reviews = new List<Review>();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            var sql = "SELECT * FROM Reviews ORDER BY CreatedAt DESC";
+            using var cmd = new MySqlCommand(sql, conn);
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                reviews.Add(new Review
+                {
+                    ReviewId = Convert.ToInt32(reader["ReviewId"]),
+                    Name = reader["Name"].ToString(),
+                    Topic = reader["Topic"].ToString(),
+                    Comment = reader["Comment"].ToString(),
+                    PhoneNumber = reader["PhoneNumber"].ToString(),
+                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                });
+            }
+
+            return reviews;
+        }
     }
 }

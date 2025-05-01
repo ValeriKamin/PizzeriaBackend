@@ -178,5 +178,150 @@ namespace Pizzeria.Tests
 
             reviewRepoMock.Verify(r => r.AddReview(It.IsAny<Review>()), Times.Once);
         }
+
+        [Test]
+        public void GetAllReviews_ReturnsListOfReviews()
+        {
+            // Arrange
+            var expectedReviews = new List<Review>
+            {
+             new Review { ReviewId = 1, Name = "Іван", Topic = "Сервіс", Comment = "Все чудово!", PhoneNumber = "380111111111", CreatedAt = DateTime.Now },
+            new Review { ReviewId = 2, Name = "Оля", Topic = "Їжа", Comment = "Смачно!", PhoneNumber = "380222222222", CreatedAt = DateTime.Now }
+            };
+
+            var reviewRepoMock = new Mock<IReviewRepository>();
+            reviewRepoMock.Setup(r => r.GetAllReviews()).Returns(expectedReviews);
+
+            var controller = new ReviewsController(reviewRepoMock.Object);
+
+            // Act
+            var result = controller.GetAllReviews();
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult!.Value, Is.InstanceOf<List<Review>>());
+
+            var actualReviews = okResult.Value as List<Review>;
+            Assert.That(actualReviews!.Count, Is.EqualTo(2));
+            Assert.That(actualReviews[0].Name, Is.EqualTo("Іван"));
+
+            reviewRepoMock.Verify(r => r.GetAllReviews(), Times.Once);
+        }
+    }
+
+    [TestFixture]
+    public class MenuControllerTests
+    {
+        [Test]
+        public void GetAllFoods_ReturnsListOfFoods()
+        {
+            // Arrange
+            var foodList = new List<PizzeriaBackend.Models.Food>
+            {
+                new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Description = "Класична", Weight = 450, Price = 129.99M },
+                new PizzeriaBackend.Models.Food { Id = 2, Name = "Пепероні", Description = "Гостра", Weight = 500, Price = 149.99M }
+            };
+
+            var foodRepoMock = new Mock<IFoodRepository>();
+            foodRepoMock.Setup(r => r.GetAllFoods()).Returns(foodList);
+
+            var controller = new MenuController(foodRepoMock.Object);
+
+            // Act
+            var result = controller.GetAllFoods();
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult!.Value, Is.InstanceOf<List<PizzeriaBackend.Models.Food>>());
+
+            var actualList = okResult.Value as List<PizzeriaBackend.Models.Food>;
+            Assert.That(actualList!.Count, Is.EqualTo(2));
+            Assert.That(actualList[0].Name, Is.EqualTo("Маргарита"));
+
+            foodRepoMock.Verify(r => r.GetAllFoods(), Times.Once);
+        }
+
+        [Test]
+        public void AddToCart_ValidProduct_AddsItemAndReturnsOk()
+        {
+            // Arrange
+            var testFood = new PizzeriaBackend.Models.Food
+            {
+                Id = 1,
+                Name = "Маргарита",
+                Description = "Класична",
+                Weight = 450,
+                Price = 129.99m
+            };
+
+            var foodRepoMock = new Mock<IFoodRepository>();
+            foodRepoMock.Setup(r => r.GetAllFoods()).Returns(new List<PizzeriaBackend.Models.Food> { testFood });
+
+            var cartRepoMock = new Mock<ICartRepository>();
+            cartRepoMock.Setup(r => r.AddItem(It.IsAny<CartItem>()));
+
+            var controller = new CartController(cartRepoMock.Object, foodRepoMock.Object);
+
+            var model = new AddToCartModel
+            {
+                FoodId = 1,
+                Quantity = 2,
+                Username = "test_user"
+            };
+
+            // Act
+            var result = controller.AddToCart(model);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+
+            var response = okResult.Value?.ToString();
+            Assert.That(response, Does.Contain("Додано до кошика"));
+
+            cartRepoMock.Verify(r => r.AddItem(It.IsAny<CartItem>()), Times.Once);
+        }
+
+        [Test]
+        public void UpdatePrice_ValidFoodId_UpdatesAndReturnsOk()
+        {
+            // Arrange
+            var foodList = new List<PizzeriaBackend.Models.Food>
+            {
+            new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Price = 129.99m, Weight = 450, Description = "Класика" }
+            };
+
+            var foodRepoMock = new Mock<IFoodRepository>();
+            foodRepoMock.Setup(r => r.GetAllFoods()).Returns(foodList);
+            foodRepoMock.Setup(r => r.UpdatePrice(1, 179.99m));
+
+            var controller = new MenuController(foodRepoMock.Object);
+
+            var model = new UpdatePriceModel
+            {
+                FoodId = 1,
+                NewPrice = 179.99m
+            };
+
+            // Act
+            var result = controller.UpdatePrice(model);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+
+            var response = okResult!.Value?.ToString();
+            Assert.That(response, Does.Contain("Ціну оновлено"));
+
+            foodRepoMock.Verify(r => r.UpdatePrice(1, 179.99m), Times.Once);
+        }
     }
 }

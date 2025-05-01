@@ -1,3 +1,4 @@
+using Pizzeria.Data;
 using PizzeriaBackend.Data;
 using PizzeriaBackend.Services;
 using static PizzeriaBackend.Services.JwtService;
@@ -38,4 +39,6 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ReviewRepository>();
 
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
+builder.Services.AddScoped<IFoodRepository, PizzeriaBackend.Data.FoodRepository>();
 

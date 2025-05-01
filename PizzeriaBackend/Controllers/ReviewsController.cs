@@ -39,6 +39,14 @@ namespace PizzeriaBackend.Controllers
                 Message = "Відгук додано!"
             });
         }
+
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAllReviews()
+        {
+            var reviews = _repo.GetAllReviews();
+            return Ok(reviews);
+        }
     }
 }
 
