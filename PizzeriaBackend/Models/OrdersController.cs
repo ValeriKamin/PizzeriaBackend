@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using NUnit.Framework;
 using PizzeriaBackend.Data;
+using System.Text.Json;
+
 
 namespace PizzeriaBackend.Models
 {
@@ -7,6 +12,7 @@ namespace PizzeriaBackend.Models
     [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
+
         private readonly IOrderRepository _orderRepo;
         private readonly ICartRepository _cartRepo;
 
@@ -14,6 +20,28 @@ namespace PizzeriaBackend.Models
         {
             _orderRepo = orderRepo;
             _cartRepo = cartRepo;
+        }
+
+        [HttpGet("admin")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAllByStatus([FromQuery] string status)
+        {
+            var orders = _orderRepo.GetOrdersByStatus(status);
+
+            var result = orders.Select(o => new
+            {
+                o.Id,
+                o.FullName,
+                o.Phone,
+                o.Address,
+                o.Total,
+                PaymentMethod = o.CardNumber == "Готівка" ? "Оплата готівкою" : "Оплата карткою",
+                Date = o.CreatedAt.ToString("dd.MM.yyyy"),
+                o.Status,
+                ItemsCount = 9 // тимчасово — або доопрацюємо
+            });
+
+            return Ok(result);
         }
 
         [HttpPost("create")]
@@ -52,5 +80,32 @@ namespace PizzeriaBackend.Models
 
             return Ok(new { message = "Замовлення оформлено!" });
         }
+
+        [HttpGet("user/{username}")]
+        public IActionResult GetUserOrders(string username)
+        {
+            var orders = _orderRepo.GetOrdersByUser(username);
+
+            var result = orders.Select(o => new
+            {
+                o.Id,
+                o.Status,
+                PaymentMethod = o.CardNumber == "Готівка" ? "Оплата готівкою" : "Оплата карткою",
+                Date = o.CreatedAt.ToString("dd.MM.yyyy"),
+                o.Total,
+                ItemsCount = 9 // тимчасово — можна буде вирахувати або зберігати
+            });
+
+            return Ok(result);
+        }
+
+        [HttpPut("update-status")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult UpdateStatus([FromBody] UpdateStatusModel model)
+        {
+            _orderRepo.UpdateStatus(model.OrderId, model.NewStatus);
+            return Ok(new { message = "Статус змінено" });
+        }
     }
+
 }

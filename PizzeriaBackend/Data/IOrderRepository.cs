@@ -7,5 +7,10 @@ namespace PizzeriaBackend.Data
         void CreateOrder(Order order);
         List<Order> GetAllOrders();
         void UpdateStatus(int orderId, string newStatus);
+
+        List<Order> GetOrdersByUser(string username);
+
+        List<Order> GetOrdersByStatus(string status);
+
     }
 }

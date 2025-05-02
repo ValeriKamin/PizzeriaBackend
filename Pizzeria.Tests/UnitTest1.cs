@@ -436,4 +436,160 @@ namespace Pizzeria.Tests
             orderRepoMock.Verify(r => r.CreateOrder(It.IsAny<Order>()), Times.Once);
         }
     }
+
+    [TestFixture]
+    public class OrdersControllerTests
+    {
+        [Test]
+        public void GetUserOrders_ReturnsOrdersList()
+        {
+            // Arrange
+            var username = "test_user";
+            var orders = new List<Order>
+            {
+                new Order
+                {
+                    Id = 1,
+                    Username = username,
+                    CreatedAt = new DateTime(2025, 4, 2),
+                    CardNumber = "1234123412341234",
+                    Total = 1900m,
+                    Status = "Обробляється"
+                },
+                new Order
+                {
+                    Id = 2,
+                    Username = username,
+                    CreatedAt = new DateTime(2025, 4, 1),
+                    CardNumber = "Готівка",
+                    Total = 1900m,
+                    Status = "Завершено"
+                }
+            };
+
+            var orderRepoMock = new Mock<IOrderRepository>();
+            orderRepoMock.Setup(r => r.GetOrdersByUser(username)).Returns(orders);
+
+            var cartRepoMock = new Mock<ICartRepository>(); 
+            var controller = new OrdersController(orderRepoMock.Object, cartRepoMock.Object);
+
+            // Act
+            var result = controller.GetUserOrders(username);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+
+            var json = JsonSerializer.Serialize(okResult!.Value,
+                new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+
+            Assert.That(json, Does.Contain("1900"));
+            Assert.That(json, Does.Contain("Обробляється"));
+            Assert.That(json, Does.Contain("Оплата карткою"));
+            Assert.That(json, Does.Contain("Оплата готівкою"));
+
+            orderRepoMock.Verify(r => r.GetOrdersByUser(username), Times.Once);
+        }
+    }
+
+    [TestFixture]
+    public class OrdersControllerTestsAdmin
+    {
+        [Test]
+        public void GetAllByStatus_ReturnsFilteredOrdersForAdmin()
+        {
+            // Arrange
+            var status = "Завершено";
+
+            var orders = new List<Order>
+            {
+                new Order
+                {
+                    Id = 1001,
+                    FullName = "Клієнт 1",
+                    Phone = "+380000000001",
+                    Address = "вул. А",
+                    CardNumber = "1234567812345678",
+                    Total = 1800m,
+                    Status = status,
+                    CreatedAt = new DateTime(2025, 4, 2)
+                },
+                new Order
+                {
+                    Id = 1002,
+                    FullName = "Клієнт 2",
+                    Phone = "+380000000002",
+                    Address = "вул. Б",
+                    CardNumber = "Готівка",
+                    Total = 1000m,
+                    Status = status,
+                    CreatedAt = new DateTime(2025, 4, 2)
+                }
+            };
+
+            var orderRepoMock = new Mock<IOrderRepository>();
+            orderRepoMock.Setup(r => r.GetOrdersByStatus(status)).Returns(orders);
+
+            var cartRepoMock = new Mock<ICartRepository>(); // для конструктора
+            var controller = new OrdersController(orderRepoMock.Object, cartRepoMock.Object);
+
+            // Act
+            var result = controller.GetAllByStatus(status);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+
+            var json = JsonSerializer.Serialize(okResult!.Value,
+                new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+
+            Assert.That(json, Does.Contain("Клієнт 1"));
+            Assert.That(json, Does.Contain("Оплата карткою"));
+            Assert.That(json, Does.Contain("Оплата готівкою"));
+            Assert.That(json, Does.Contain("1800"));
+            Assert.That(json, Does.Contain("1000"));
+            Assert.That(json, Does.Contain("02.04.2025"));
+
+            orderRepoMock.Verify(r => r.GetOrdersByStatus(status), Times.Once);
+        }
+
+        [Test]
+        public void UpdateStatus_ValidCall_UpdatesAndReturnsOk()
+        {
+            // Arrange
+            var orderId = 1234;
+            var newStatus = "Завершено";
+
+            var orderRepoMock = new Mock<IOrderRepository>();
+            orderRepoMock.Setup(r => r.UpdateStatus(orderId, newStatus));
+
+            var cartRepoMock = new Mock<ICartRepository>(); // для конструктора
+
+            var controller = new OrdersController(orderRepoMock.Object, cartRepoMock.Object);
+
+            var model = new UpdateStatusModel
+            {
+                OrderId = orderId,
+                NewStatus = newStatus
+            };
+
+            // Act
+            var result = controller.UpdateStatus(model);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+
+            var json = JsonSerializer.Serialize(okResult!.Value,
+                new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+
+            Assert.That(json, Does.Contain("Статус змінено"));
+
+            orderRepoMock.Verify(r => r.UpdateStatus(orderId, newStatus), Times.Once);
+        }
+    }
 }

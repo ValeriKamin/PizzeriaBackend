@@ -45,3 +45,7 @@ builder.Services.AddScoped<IFoodRepository, PizzeriaBackend.Data.FoodRepository>
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+
+
+
