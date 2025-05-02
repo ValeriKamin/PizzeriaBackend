@@ -38,5 +38,25 @@ namespace PizzeriaBackend.Controllers
 
             return Ok(new { message = "Додано до кошика" });
         }
+
+        [HttpGet("{username}")]
+        public IActionResult GetCart(string username)
+        {
+            var items = _repo.GetItemsByUser(username);
+
+            var total = items.Sum(i => i.Price);
+
+            return Ok(new
+            {
+                items = items.Select(i => new
+                {
+                    i.FoodName,
+                    i.Quantity,
+                    i.Weight,
+                    i.Price
+                }),
+                total = Math.Round(total, 2)
+            });
+        }
     }
 }

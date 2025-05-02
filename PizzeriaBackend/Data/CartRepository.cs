@@ -69,5 +69,7 @@ namespace PizzeriaBackend.Data
             cmd.Parameters.AddWithValue("@user", username);
             cmd.ExecuteNonQuery();
         }
+
+
     }
 }

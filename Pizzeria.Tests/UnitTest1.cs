@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using static PizzeriaBackend.Services.JwtService;
 using PizzeriaBackend.Models;
 using PizzeriaBackend.Controllers;
+using System.Text.Json;
 
 namespace Pizzeria.Tests
 {
@@ -322,6 +323,117 @@ namespace Pizzeria.Tests
             Assert.That(response, Does.Contain("Ціну оновлено"));
 
             foodRepoMock.Verify(r => r.UpdatePrice(1, 179.99m), Times.Once);
+        }
+    }
+
+    [TestFixture]
+    public class CartControllerTests
+    {
+        [Test]
+        public void GetCart_ReturnsItemsAndTotalPrice()
+        {
+            // Arrange
+            var username = "test_user";
+
+            var cartItems = new List<CartItem>
+            {
+                new CartItem
+                {
+                    FoodName = "Маргарита",
+                    Quantity = 2,
+                    Weight = 500,
+                    Price = 129.99m * 2,
+                    Username = username
+                },
+                new CartItem
+                {
+                    FoodName = "Пепероні",
+                    Quantity = 1,
+                    Weight = 450,
+                    Price = 149.99m,
+                    Username = username
+                }
+            };
+
+            var cartRepoMock = new Mock<ICartRepository>();
+            cartRepoMock.Setup(r => r.GetItemsByUser(username)).Returns(cartItems);
+
+            var foodRepoMock = new Mock<IFoodRepository>(); // для конструктора
+
+            var controller = new CartController(cartRepoMock.Object, foodRepoMock.Object);
+
+            // Act
+            var result = controller.GetCart(username);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+
+            var json = JsonSerializer.Serialize(okResult!.Value, new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
+            Assert.That(json, Does.Contain("Маргарита"));
+            Assert.That(json, Does.Contain("Пепероні"));
+            Assert.That(json, Does.Contain("409.97")); // 2x129.99 + 149.99
+
+            cartRepoMock.Verify(r => r.GetItemsByUser(username), Times.Once);
+        }
+
+        [Test]
+        public void CreateOrder_ValidCart_CreatesOrderAndReturnsOk()
+        {
+            // Arrange
+            var username = "test_user";
+
+            var cartItems = new List<CartItem>
+            {
+                new CartItem { FoodName = "Пепероні", Quantity = 2, Weight = 500, Price = 259.99m, Username = username },
+                new CartItem { FoodName = "4 сира", Quantity = 3, Weight = 680, Price = 659.00m, Username = username }
+            };
+
+            var cartRepoMock = new Mock<ICartRepository>();
+            cartRepoMock.Setup(r => r.GetItemsByUser(username)).Returns(cartItems);
+            cartRepoMock.Setup(r => r.ClearCart(username));
+
+            var orderRepoMock = new Mock<IOrderRepository>();
+            orderRepoMock.Setup(r => r.CreateOrder(It.IsAny<Order>()));
+
+            var controller = new OrdersController(orderRepoMock.Object, cartRepoMock.Object);
+
+            var model = new CreateOrderModel
+            {
+                Username = username,
+                FullName = "Іван",
+                Phone = "+380123456789",
+                Email = "test@example.com",
+                DeliveryType = "Доставка",
+                Address = "вул. Прикладна, 1",
+                Apartment = "12",
+                Entrance = "2",
+                Floor = "3",
+                DoorCode = "1234",
+                CourierComment = "Подзвоніть",
+                DeliveryTime = "18:00",
+                CardNumber = "1234567812345678",
+                CVM = "123",
+                Expiry = "12/25"
+            };
+
+            // Act
+            var result = controller.Create(model);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+            var response = okResult!.Value!.ToString();
+            Assert.That(response, Does.Contain("Замовлення оформлено"));
+
+            cartRepoMock.Verify(r => r.GetItemsByUser(username), Times.Once);
+            cartRepoMock.Verify(r => r.ClearCart(username), Times.Once);
+            orderRepoMock.Verify(r => r.CreateOrder(It.IsAny<Order>()), Times.Once);
         }
     }
 }
