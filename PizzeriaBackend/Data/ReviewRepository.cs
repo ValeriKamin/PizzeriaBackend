@@ -18,7 +18,7 @@ namespace PizzeriaBackend.Data
             using var conn = _db.GetConnection();
             conn.Open();
 
-            var sql = @"INSERT INTO Reviews (Name, Topic, Comment, PhoneNumber, CreatedAt)
+            var sql = @"INSERT INTO Reviews (Name, Topic, Comment, Phone, CreatedAt)
                         VALUES (@name, @topic, @comment, @phone, @createdAt)";
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@name", review.Name);
@@ -49,7 +49,7 @@ namespace PizzeriaBackend.Data
                     Name = reader["Name"].ToString(),
                     Topic = reader["Topic"].ToString(),
                     Comment = reader["Comment"].ToString(),
-                    PhoneNumber = reader["PhoneNumber"].ToString(),
+                    PhoneNumber = reader["Phone"].ToString(),
                     CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
                 });
             }

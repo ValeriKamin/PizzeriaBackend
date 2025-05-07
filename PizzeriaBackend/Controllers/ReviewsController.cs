@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PizzeriaBackend.Controllers
 {
-    [Authorize(Roles = "User")]
+    //[Authorize(Roles = "User")]
     [ApiController]
     [Route("api/[controller]")]
     public class ReviewsController : ControllerBase
@@ -41,7 +41,7 @@ namespace PizzeriaBackend.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult GetAllReviews()
         {
             var reviews = _repo.GetAllReviews();
