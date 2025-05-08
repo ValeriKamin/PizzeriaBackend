@@ -23,8 +23,9 @@ namespace PizzeriaBackend.Controllers
             return Ok(foods);
         }
 
+
         [HttpPut("update-price")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult UpdatePrice([FromBody] UpdatePriceModel model)
         {
             var foods = _repo.GetAllFoods();

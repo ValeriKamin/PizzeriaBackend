@@ -28,11 +28,12 @@ namespace PizzeriaBackend.Data
             {
                 foods.Add(new Food
                 {
-                    Id = Convert.ToInt32(reader["Id"]),
+                    Id = Convert.ToInt32(reader["FoodId"]),
                     Name = reader["Name"].ToString(),
-                    Description = reader["Description"].ToString(),
-                    Weight = Convert.ToDouble(reader["Weight"]),
-                    Price = Convert.ToDecimal(reader["Price"])
+                    Quantity = reader["Quantity"] is DBNull ? null : reader["Quantity"].ToString(),
+                    Weight = reader["Weight"] is DBNull ? null : Convert.ToDouble(reader["Weight"]),
+                    Price = Convert.ToDecimal(reader["Price"]),
+                    Category = reader["Category"] is DBNull ? null : reader["Category"].ToString()
                 });
             }
 
@@ -44,7 +45,7 @@ namespace PizzeriaBackend.Data
             using var conn = _db.GetConnection();
             conn.Open();
 
-            var sql = "UPDATE Foods SET Price = @price WHERE Id = @id";
+            var sql = "UPDATE Foods SET Price = @price WHERE FoodId = @id";
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@price", newPrice);
             cmd.Parameters.AddWithValue("@id", foodId);

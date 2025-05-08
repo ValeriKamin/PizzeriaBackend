@@ -221,8 +221,8 @@ namespace Pizzeria.Tests
             // Arrange
             var foodList = new List<PizzeriaBackend.Models.Food>
             {
-                new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Description = "Класична", Weight = 450, Price = 129.99M },
-                new PizzeriaBackend.Models.Food { Id = 2, Name = "Пепероні", Description = "Гостра", Weight = 500, Price = 149.99M }
+                new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Quantity = "Класична", Weight = 450, Price = 129.99M },
+                new PizzeriaBackend.Models.Food { Id = 2, Name = "Пепероні", Quantity = "Гостра", Weight = 500, Price = 149.99M }
             };
 
             var foodRepoMock = new Mock<IFoodRepository>();
@@ -254,7 +254,7 @@ namespace Pizzeria.Tests
             {
                 Id = 1,
                 Name = "Маргарита",
-                Description = "Класична",
+                Quantity = "Класична",
                 Weight = 450,
                 Price = 129.99m
             };
@@ -295,7 +295,7 @@ namespace Pizzeria.Tests
             // Arrange
             var foodList = new List<PizzeriaBackend.Models.Food>
             {
-            new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Price = 129.99m, Weight = 450, Description = "Класика" }
+            new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Price = 129.99m, Weight = 450, Quantity = "Класика" }
             };
 
             var foodRepoMock = new Mock<IFoodRepository>();
