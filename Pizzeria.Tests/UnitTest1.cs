@@ -405,7 +405,7 @@ namespace Pizzeria.Tests
             var model = new CreateOrderModel
             {
                 Username = username,
-                FullName = "Іван",
+                //FullName = "Іван",
                 Phone = "+380123456789",
                 Email = "test@example.com",
                 DeliveryType = "Доставка",
@@ -507,7 +507,7 @@ namespace Pizzeria.Tests
                 new Order
                 {
                     Id = 1001,
-                    FullName = "Клієнт 1",
+                    Username = "Клієнт 1",
                     Phone = "+380000000001",
                     Address = "вул. А",
                     CardNumber = "1234567812345678",
@@ -518,7 +518,7 @@ namespace Pizzeria.Tests
                 new Order
                 {
                     Id = 1002,
-                    FullName = "Клієнт 2",
+                    Username = "Клієнт 2",
                     Phone = "+380000000002",
                     Address = "вул. Б",
                     CardNumber = "Готівка",

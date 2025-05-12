@@ -1,6 +1,7 @@
 ﻿using PizzeriaBackend.Models;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PizzeriaBackend.Data
 {
@@ -18,14 +19,13 @@ namespace PizzeriaBackend.Data
             using var conn = _db.GetConnection();
             conn.Open();
 
-            var sql = @"INSERT INTO Orders 
-                (Username, FullName, Phone, Email, DeliveryType, Address, Apartment, Entrance, Floor, DoorCode, CourierComment, DeliveryTime, CardNumber, CVM, Expiry, Total, Status, CreatedAt) 
-                VALUES 
-                (@username, @fullName, @phone, @email, @deliveryType, @address, @apartment, @entrance, @floor, @doorCode, @comment, @time, @card, @cvm, @expiry, @total, @status, @created)";
+            var sql = @"INSERT INTO Orders
+            (Username , Phone, Email, DeliveryType, Address, Apartment, Entrance, Floor, DoorCode, CommentForCourier, DeliveryTime,Total, Status, CreatedAt)
+            VALUES
+            (@username, @phone, @email, @deliveryType, @address, @apartment, @entrance, @floor, @doorCode, @comment, @time, @total, @status, @created)";
 
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@username", order.Username);
-            cmd.Parameters.AddWithValue("@fullName", order.FullName);
             cmd.Parameters.AddWithValue("@phone", order.Phone);
             cmd.Parameters.AddWithValue("@email", order.Email);
             cmd.Parameters.AddWithValue("@deliveryType", order.DeliveryType);
@@ -36,9 +36,6 @@ namespace PizzeriaBackend.Data
             cmd.Parameters.AddWithValue("@doorCode", order.DoorCode);
             cmd.Parameters.AddWithValue("@comment", order.CourierComment);
             cmd.Parameters.AddWithValue("@time", order.DeliveryTime);
-            cmd.Parameters.AddWithValue("@card", order.CardNumber);
-            cmd.Parameters.AddWithValue("@cvm", order.CVM);
-            cmd.Parameters.AddWithValue("@expiry", order.Expiry);
             cmd.Parameters.AddWithValue("@total", order.Total);
             cmd.Parameters.AddWithValue("@status", order.Status);
             cmd.Parameters.AddWithValue("@created", order.CreatedAt);
@@ -105,6 +102,7 @@ namespace PizzeriaBackend.Data
         }
 
 
+
         public List<Order> GetOrdersByStatus(string status)
         {
             var orders = new List<Order>();
@@ -147,5 +145,50 @@ namespace PizzeriaBackend.Data
         }
 
 
+        public List<OrderWithItems> GetOrdersByUsername(string username)
+        {
+            var orders = new List<OrderWithItems>();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            var orderCmd = new MySqlCommand("SELECT * FROM Orders WHERE Username = @username ORDER BY CreatedAt DESC", conn);
+            orderCmd.Parameters.AddWithValue("@username", username);
+
+            using var reader = orderCmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var order = new OrderWithItems
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+                    Status = reader["Status"].ToString(),
+                    Total = Convert.ToDecimal(reader["Total"]),
+                    Items = new List<OrderItem>() // додаємо пізніше
+                };
+                orders.Add(order);
+            }
+            reader.Close();
+
+            // Тепер додаємо товари до кожного замовлення
+            foreach (var order in orders)
+            {
+                var itemCmd = new MySqlCommand("SELECT * FROM OrderItems WHERE OrderId = @id", conn);
+                itemCmd.Parameters.AddWithValue("@id", order.Id);
+
+                using var itemReader = itemCmd.ExecuteReader();
+                while (itemReader.Read())
+                {
+                    order.Items.Add(new OrderItem
+                    {
+                        FoodName = itemReader["FoodName"].ToString(),
+                        Quantity = Convert.ToInt32(itemReader["Quantity"])
+                    });
+                }
+                itemReader.Close();
+            }
+
+            return orders;
+        }
     }
 }

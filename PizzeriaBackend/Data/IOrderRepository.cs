@@ -11,6 +11,8 @@ namespace PizzeriaBackend.Data
         List<Order> GetOrdersByUser(string username);
 
         List<Order> GetOrdersByStatus(string status);
+        List<OrderWithItems> GetOrdersByUsername(string username);
 
     }
+
 }

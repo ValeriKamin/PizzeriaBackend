@@ -28,4 +28,19 @@
         public string Status { get; set; } 
         public DateTime CreatedAt { get; set; }
     }
+
+    public class OrderWithItems
+    {
+        public int Id { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string Status { get; set; }
+        public decimal Total { get; set; }
+        public List<OrderItem> Items { get; set; }
+    }
+
+    public class OrderItem
+    {
+        public string FoodName { get; set; }
+        public int Quantity { get; set; }
+    }
 }
