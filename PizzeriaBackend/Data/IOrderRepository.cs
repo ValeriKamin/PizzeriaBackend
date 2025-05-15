@@ -4,7 +4,7 @@ namespace PizzeriaBackend.Data
 {
     public interface IOrderRepository
     {
-        void CreateOrder(Order order);
+        int CreateOrder(Order order);
         List<Order> GetAllOrders();
         void UpdateStatus(int orderId, string newStatus);
 
@@ -12,7 +12,8 @@ namespace PizzeriaBackend.Data
 
         List<Order> GetOrdersByStatus(string status);
         List<OrderWithItems> GetOrdersByUsername(string username);
-
+        List<OrderWithItems> GetOrdersWithItemsByStatus(string status);
+        void AddOrderItems(int orderId, List<CartItem> items);
     }
 
 }

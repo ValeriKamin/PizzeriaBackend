@@ -24,67 +24,57 @@ namespace PizzeriaBackend.Controllers
         }
 
         [HttpGet("admin")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult GetAllByStatus([FromQuery] string status)
         {
             var orders = _orderRepo.GetOrdersByStatus(status);
 
-            var result = orders.Select(o => new
-            {
+            var result = orders.Select(o => new {
                 o.Id,
-                o.FullName,
+                o.Username,
                 o.Phone,
+                o.Email,
+                o.DeliveryType,
                 o.Address,
+                o.Apartment,
+                o.Entrance,
+                o.Floor,
+                o.DoorCode,
+                o.CourierComment,
                 o.Total,
-                //PaymentMethod = o.CardNumber == "Готівка" ? "Оплата готівкою" : "Оплата карткою",
-                Date = o.CreatedAt.ToString("dd.MM.yyyy"),
                 o.Status,
-                ItemsCount = 9 // тимчасово — або доопрацюємо
+                o.CreatedAt,
             });
 
             return Ok(result);
         }
 
-        //[HttpPost("create")]
-        //public IActionResult Create([FromBody] CreateOrderModel model)
-        //{
-        //    //var cartItems = _cartRepo.GetItemsByUser(model.Username);
-        //    //if (!cartItems.Any())
-        //    //    return BadRequest(new { message = "Кошик порожній" });
+        [HttpGet("admin/full")]
+        public IActionResult GetAllByStatusWithItems([FromQuery] string status)
+        {
+            var orders = _orderRepo.GetOrdersWithItemsByStatus(status); 
 
-        //    if (model.Items == null || !model.Items.Any())
-        //        return BadRequest(new { message = "Кошик порожній" });
+            var result = orders.Select(o => new {
+                o.Id,
+                o.Username,
+                o.Phone,
+                o.Email,
+                o.DeliveryType,
+                o.Address,
+                o.Apartment,
+                o.Entrance,
+                o.Floor,
+                o.DoorCode,
+                o.CourierComment,
+                o.Total,
+                o.Status,
+                o.CreatedAt,
+                o.Items
+            });
 
-        //    //var total = cartItems.Sum(i => i.Price);
-        //    var total = model.Items.Sum(i => i.Price * i.Quantity);
+            return Ok(result);
+        }
 
-        //    var order = new Order
-        //    {
-        //        Username = model.Username,
-        //        FullName = model.FullName,
-        //        Phone = model.Phone,
-        //        Email = model.Email,
-        //        DeliveryType = model.DeliveryType,
-        //        Address = model.Address,
-        //        Apartment = model.Apartment,
-        //        Entrance = model.Entrance,
-        //        Floor = model.Floor,
-        //        DoorCode = model.DoorCode,
-        //        CourierComment = model.CourierComment,
-        //        //DeliveryTime = model.DeliveryTime,
-        //        //CardNumber = model.CardNumber,
-        //        //CVM = model.CVM,
-        //        Expiry = model.Expiry,
-        //        Total = total,
-        //        Status = "Обробляється",
-        //        CreatedAt = DateTime.Now
-        //    };
-
-        //    _orderRepo.CreateOrder(order);
-        //    //_cartRepo.ClearCart(model.Username);
-
-        //    return Ok(new { message = "Замовлення оформлено!" });
-        //}
 
         [HttpPost("create")]
         public IActionResult Create([FromBody] CreateOrderModel model)
@@ -107,7 +97,6 @@ namespace PizzeriaBackend.Controllers
             var order = new Order
             {
                 Username = model.Username,
-                //FullName = model.FullName,
                 Phone = model.Phone,
                 Email = model.Email,
                 DeliveryType = model.DeliveryType,
@@ -118,15 +107,13 @@ namespace PizzeriaBackend.Controllers
                 DoorCode = model.DoorCode,
                 CourierComment = model.CourierComment,
                 DeliveryTime = model.DeliveryTime,
-                //CardNumber = model.CardNumber,
-                //CVM = model.CVM,
-                //Expiry = model.Expiry,
                 Total = total,
                 Status = "Обробляється",
                 CreatedAt = DateTime.Now
             };
 
-            _orderRepo.CreateOrder(order);
+            int orderId = _orderRepo.CreateOrder(order); 
+            _orderRepo.AddOrderItems(orderId, cartItems); 
 
             if (model.Items == null && !string.IsNullOrWhiteSpace(model.Username))
             {
@@ -148,19 +135,22 @@ namespace PizzeriaBackend.Controllers
                 PaymentMethod = o.CardNumber == "Готівка" ? "Оплата готівкою" : "Оплата карткою",
                 Date = o.CreatedAt.ToString("dd.MM.yyyy"),
                 o.Total,
-                ItemsCount = 9 // тимчасово — можна буде вирахувати або зберігати
+                ItemsCount = 9 
             });
 
             return Ok(result);
         }
 
         [HttpPut("update-status")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult UpdateStatus([FromBody] UpdateStatusModel model)
         {
             _orderRepo.UpdateStatus(model.OrderId, model.NewStatus);
             return Ok(new { message = "Статус змінено" });
         }
+
+
+
 
         [HttpGet("user/{username}")]
         public IActionResult GetByUser(string username)
@@ -168,6 +158,13 @@ namespace PizzeriaBackend.Controllers
             var orders = _orderRepo.GetOrdersByUsername(username);
             return Ok(orders);
         }
+
+        //[HttpGet("admin/full")]
+        //public IActionResult GetAllByStatusWithItems([FromQuery] string status)
+        //{
+        //    var orders = _orderRepo.GetOrdersWithItemsByStatus(status); // Повертає List<OrderWithItems>
+        //    return Ok(orders);
+        //}
     }
 
 }
