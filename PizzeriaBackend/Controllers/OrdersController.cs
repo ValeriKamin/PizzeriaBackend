@@ -123,19 +123,35 @@ namespace PizzeriaBackend.Controllers
             return Ok(new { message = "Замовлення оформлено!" });
         }
 
-        [HttpGet("user/{username}")]
-        public IActionResult GetUserOrders(string username)
-        {
-            var orders = _orderRepo.GetOrdersByUser(username);
+        //[HttpGet("user/{username}")]
+        //public IActionResult GetUserOrders(string username)
+        //{
+        //    var orders = _orderRepo.GetOrdersByUser(username);
 
-            var result = orders.Select(o => new
-            {
+        //    var result = orders.Select(o => new
+        //    {
+        //        o.Id,
+        //        o.Status,
+        //        PaymentMethod = o.CardNumber == "Готівка" ? "Оплата готівкою" : "Оплата карткою",
+        //        Date = o.CreatedAt.ToString("dd.MM.yyyy"),
+        //        o.Total,
+        //        ItemsCount = 9 
+        //    });
+
+        //    return Ok(result);
+        //}
+
+        [HttpGet("user/{username}")]
+        public IActionResult GetByUser(string username)
+        {
+            var orders = _orderRepo.GetOrdersByUser(username); // вже з Items
+
+            var result = orders.Select(o => new {
                 o.Id,
                 o.Status,
-                PaymentMethod = o.CardNumber == "Готівка" ? "Оплата готівкою" : "Оплата карткою",
-                Date = o.CreatedAt.ToString("dd.MM.yyyy"),
                 o.Total,
-                ItemsCount = 9 
+                o.CreatedAt,
+                o.Items
             });
 
             return Ok(result);
@@ -152,12 +168,12 @@ namespace PizzeriaBackend.Controllers
 
 
 
-        [HttpGet("user/{username}")]
-        public IActionResult GetByUser(string username)
-        {
-            var orders = _orderRepo.GetOrdersByUsername(username);
-            return Ok(orders);
-        }
+        //[HttpGet("user/full/{username}")]
+        //public IActionResult GetByUser(string username)
+        //{
+        //    var orders = _orderRepo.GetOrdersWithItemsByUser(username);
+        //    return Ok(orders);
+        //}
 
         //[HttpGet("admin/full")]
         //public IActionResult GetAllByStatusWithItems([FromQuery] string status)
@@ -165,6 +181,9 @@ namespace PizzeriaBackend.Controllers
         //    var orders = _orderRepo.GetOrdersWithItemsByStatus(status); // Повертає List<OrderWithItems>
         //    return Ok(orders);
         //}
+
+
     }
+
 
 }

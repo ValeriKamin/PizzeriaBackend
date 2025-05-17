@@ -60,9 +60,50 @@ namespace PizzeriaBackend.Data
             cmd.ExecuteNonQuery();
         }
 
-        public List<Order> GetOrdersByUser(string username)
+        //public List<Order> GetOrdersByUser(string username)
+        //{
+        //    var orders = new List<Order>();
+
+        //    using var conn = _db.GetConnection();
+        //    conn.Open();
+
+        //    var sql = "SELECT * FROM Orders WHERE Username = @user ORDER BY CreatedAt DESC";
+        //    using var cmd = new MySqlCommand(sql, conn);
+        //    cmd.Parameters.AddWithValue("@user", username);
+
+        //    using var reader = cmd.ExecuteReader();
+        //    while (reader.Read())
+        //    {
+        //        orders.Add(new Order
+        //        {
+        //            Id = Convert.ToInt32(reader["OrderId"]),
+        //            Username = reader["Username"].ToString(),
+        //            //FullName = reader["FullName"].ToString(),
+        //            Phone = reader["Phone"].ToString(),
+        //            Email = reader["Email"].ToString(),
+        //            DeliveryType = reader["DeliveryType"].ToString(),
+        //            Address = reader["Address"].ToString(),
+        //            Apartment = reader["Apartment"].ToString(),
+        //            Entrance = reader["Entrance"].ToString(),
+        //            Floor = reader["Floor"].ToString(),
+        //            DoorCode = reader["DoorCode"].ToString(),
+        //            CourierComment = reader["CommentForCourier"].ToString(),
+        //            //DeliveryTime = reader["DeliveryTime"].ToString(),
+        //            //CardNumber = reader["CardNumber"].ToString(),
+        //            //CVM = reader["CVM"].ToString(),
+        //            //Expiry = reader["Expiry"].ToString(),
+        //            Total = Convert.ToDecimal(reader["Total"]),
+        //            Status = reader["Status"].ToString(),
+        //            //CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+        //        });
+        //    }
+
+        //    return orders;
+        //}
+
+        public List<OrderWithItems> GetOrdersByUser(string username)
         {
-            var orders = new List<Order>();
+            var orders = new List<OrderWithItems>();
 
             using var conn = _db.GetConnection();
             conn.Open();
@@ -74,11 +115,56 @@ namespace PizzeriaBackend.Data
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                orders.Add(new Order
+                orders.Add(new OrderWithItems
                 {
                     Id = Convert.ToInt32(reader["OrderId"]),
                     Username = reader["Username"].ToString(),
-                    //FullName = reader["FullName"].ToString(),
+                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+                    Status = reader["Status"].ToString(),
+                    Total = Convert.ToDecimal(reader["Total"]),
+                    Items = new List<OrderItem>()
+                });
+            }
+            reader.Close();
+
+            foreach (var order in orders)
+            {
+                var itemCmd = new MySqlCommand("SELECT * FROM OrderItems WHERE OrderId = @id", conn);
+                itemCmd.Parameters.AddWithValue("@id", order.Id);
+
+                using var itemReader = itemCmd.ExecuteReader();
+                while (itemReader.Read())
+                {
+                    order.Items.Add(new OrderItem
+                    {
+                        FoodName = itemReader["FoodName"].ToString(),
+                        Quantity = Convert.ToInt32(itemReader["Quantity"])
+                    });
+                }
+                itemReader.Close();
+            }
+
+            return orders;
+        }
+
+        public List<OrderWithItems> GetOrdersWithItemsByUser(string username)
+        {
+            var orders = new List<OrderWithItems>();
+
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            var sql = "SELECT * FROM Orders WHERE Username = @username ORDER BY CreatedAt DESC";
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@username", username);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var order = new OrderWithItems
+                {
+                    Id = Convert.ToInt32(reader["OrderId"]),
+                    Username = reader["Username"].ToString(),
                     Phone = reader["Phone"].ToString(),
                     Email = reader["Email"].ToString(),
                     DeliveryType = reader["DeliveryType"].ToString(),
@@ -87,21 +173,35 @@ namespace PizzeriaBackend.Data
                     Entrance = reader["Entrance"].ToString(),
                     Floor = reader["Floor"].ToString(),
                     DoorCode = reader["DoorCode"].ToString(),
-                    CourierComment = reader["CourierComment"].ToString(),
-                    DeliveryTime = reader["DeliveryTime"].ToString(),
-                    //CardNumber = reader["CardNumber"].ToString(),
-                    //CVM = reader["CVM"].ToString(),
-                    //Expiry = reader["Expiry"].ToString(),
+                    CourierComment = reader["CommentForCourier"].ToString(),
                     Total = Convert.ToDecimal(reader["Total"]),
                     Status = reader["Status"].ToString(),
-                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
-                });
+                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+                    Items = new List<OrderItem>()
+                };
+                orders.Add(order);
+            }
+            reader.Close();
+
+            foreach (var order in orders)
+            {
+                var itemCmd = new MySqlCommand("SELECT * FROM OrderItems WHERE OrderId = @id", conn);
+                itemCmd.Parameters.AddWithValue("@id", order.Id);
+
+                using var itemReader = itemCmd.ExecuteReader();
+                while (itemReader.Read())
+                {
+                    order.Items.Add(new OrderItem
+                    {
+                        FoodName = itemReader["FoodName"].ToString(),
+                        Quantity = Convert.ToInt32(itemReader["Quantity"])
+                    });
+                }
+                itemReader.Close();
             }
 
             return orders;
         }
-
-
 
         public List<Order> GetOrdersByStatus(string status)
         {
@@ -182,7 +282,7 @@ namespace PizzeriaBackend.Data
             }
             reader.Close();
 
-            // Тепер додаємо товари
+
             foreach (var order in orders)
             {
                 var itemCmd = new MySqlCommand("SELECT * FROM OrderItems WHERE OrderId = @id", conn);
