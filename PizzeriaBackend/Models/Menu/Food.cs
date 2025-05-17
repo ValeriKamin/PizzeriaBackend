@@ -1,4 +1,4 @@
-﻿namespace PizzeriaBackend.Models
+﻿namespace PizzeriaBackend.Models.Menu
 {
     public class Food
     {
@@ -7,7 +7,6 @@
         public string? Quantity { get; set; }
         public double? Weight { get; set; }
         public decimal Price { get; set; }
-
         public string? Category { get; set; }
     }
 }

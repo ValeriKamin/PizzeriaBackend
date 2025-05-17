@@ -1,15 +1,18 @@
 ﻿using NUnit.Framework;
 using Moq;
 using Pizzeria.Controllers;
-using PizzeriaBackend.Data;
 using Pizzeria.Models;
 using Pizzeria.Helpers;
 using PizzeriaBackend.Services;
 using Microsoft.AspNetCore.Mvc;
 using static PizzeriaBackend.Services.JwtService;
-using PizzeriaBackend.Models;
 using PizzeriaBackend.Controllers;
 using System.Text.Json;
+using PizzeriaBackend.Models.Auth;
+using PizzeriaBackend.Models.Cart;
+using PizzeriaBackend.Models.Orders;
+using PizzeriaBackend.Models.Reviews;
+using PizzeriaBackend.Data.Interfaces;
 
 namespace Pizzeria.Tests
 {
@@ -219,7 +222,7 @@ namespace Pizzeria.Tests
         public void GetAllFoods_ReturnsListOfFoods()
         {
             // Arrange
-            var foodList = new List<PizzeriaBackend.Models.Food>
+            var foodList = new List<PizzeriaBackend.Models.Menu.Food>
             {
                 new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Quantity = "Класична", Weight = 450, Price = 129.99M },
                 new PizzeriaBackend.Models.Food { Id = 2, Name = "Пепероні", Quantity = "Гостра", Weight = 500, Price = 149.99M }
@@ -237,9 +240,9 @@ namespace Pizzeria.Tests
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
 
             var okResult = result as OkObjectResult;
-            Assert.That(okResult!.Value, Is.InstanceOf<List<PizzeriaBackend.Models.Food>>());
+            Assert.That(okResult!.Value, Is.InstanceOf<List<PizzeriaBackend.Models.Menu.Food>>());
 
-            var actualList = okResult.Value as List<PizzeriaBackend.Models.Food>;
+            var actualList = okResult.Value as List<PizzeriaBackend.Models.Menu.Food>;
             Assert.That(actualList!.Count, Is.EqualTo(2));
             Assert.That(actualList[0].Name, Is.EqualTo("Маргарита"));
 
@@ -260,7 +263,7 @@ namespace Pizzeria.Tests
             };
 
             var foodRepoMock = new Mock<IFoodRepository>();
-            foodRepoMock.Setup(r => r.GetAllFoods()).Returns(new List<PizzeriaBackend.Models.Food> { testFood });
+            foodRepoMock.Setup(r => r.GetAllFoods()).Returns(new List<PizzeriaBackend.Models.Menu.Food> { testFood });
 
             var cartRepoMock = new Mock<ICartRepository>();
             cartRepoMock.Setup(r => r.AddItem(It.IsAny<CartItem>()));
@@ -293,7 +296,7 @@ namespace Pizzeria.Tests
         public void UpdatePrice_ValidFoodId_UpdatesAndReturnsOk()
         {
             // Arrange
-            var foodList = new List<PizzeriaBackend.Models.Food>
+            var foodList = new List<PizzeriaBackend.Models.Menu.Food>
             {
             new PizzeriaBackend.Models.Food { Id = 1, Name = "Маргарита", Price = 129.99m, Weight = 450, Quantity = "Класика" }
             };

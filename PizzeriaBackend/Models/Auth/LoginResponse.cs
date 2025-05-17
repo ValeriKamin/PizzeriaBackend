@@ -1,4 +1,4 @@
-﻿namespace Pizzeria.Models
+﻿namespace PizzeriaBackend.Models.Auth
 {
     public class LoginResponse
     {

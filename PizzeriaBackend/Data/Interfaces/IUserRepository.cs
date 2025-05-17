@@ -1,6 +1,6 @@
 ﻿using Pizzeria.Models;
 
-namespace PizzeriaBackend.Data
+namespace PizzeriaBackend.Data.Interfaces
 {
     public interface IUserRepository
     {

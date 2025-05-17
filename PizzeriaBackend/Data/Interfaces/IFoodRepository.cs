@@ -1,7 +1,7 @@
-﻿using PizzeriaBackend.Models;
+﻿using PizzeriaBackend.Models.Menu;
 using System.Collections.Generic;
 
-namespace PizzeriaBackend.Data
+namespace PizzeriaBackend.Data.Interfaces
 {
     public interface IFoodRepository
     {

@@ -2,9 +2,10 @@
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using Pizzeria.Controllers;
-using PizzeriaBackend.Data;
 using PizzeriaBackend.Models;
 using Microsoft.AspNetCore.Authorization;
+using PizzeriaBackend.Models.Reviews;
+using PizzeriaBackend.Data.Interfaces;
 
 namespace PizzeriaBackend.Controllers
 {

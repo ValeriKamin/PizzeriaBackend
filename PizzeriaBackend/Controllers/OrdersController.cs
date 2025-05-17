@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using PizzeriaBackend.Data;
-using PizzeriaBackend.Models;
+using PizzeriaBackend.Data.Interfaces;
+using PizzeriaBackend.Models.Cart;
+using PizzeriaBackend.Models.Orders;
 using System.Text.Json;
 
 
@@ -123,28 +124,10 @@ namespace PizzeriaBackend.Controllers
             return Ok(new { message = "Замовлення оформлено!" });
         }
 
-        //[HttpGet("user/{username}")]
-        //public IActionResult GetUserOrders(string username)
-        //{
-        //    var orders = _orderRepo.GetOrdersByUser(username);
-
-        //    var result = orders.Select(o => new
-        //    {
-        //        o.Id,
-        //        o.Status,
-        //        PaymentMethod = o.CardNumber == "Готівка" ? "Оплата готівкою" : "Оплата карткою",
-        //        Date = o.CreatedAt.ToString("dd.MM.yyyy"),
-        //        o.Total,
-        //        ItemsCount = 9 
-        //    });
-
-        //    return Ok(result);
-        //}
-
         [HttpGet("user/{username}")]
         public IActionResult GetByUser(string username)
         {
-            var orders = _orderRepo.GetOrdersByUser(username); // вже з Items
+            var orders = _orderRepo.GetOrdersByUser(username); 
 
             var result = orders.Select(o => new {
                 o.Id,
@@ -165,25 +148,6 @@ namespace PizzeriaBackend.Controllers
             return Ok(new { message = "Статус змінено" });
         }
 
-
-
-
-        //[HttpGet("user/full/{username}")]
-        //public IActionResult GetByUser(string username)
-        //{
-        //    var orders = _orderRepo.GetOrdersWithItemsByUser(username);
-        //    return Ok(orders);
-        //}
-
-        //[HttpGet("admin/full")]
-        //public IActionResult GetAllByStatusWithItems([FromQuery] string status)
-        //{
-        //    var orders = _orderRepo.GetOrdersWithItemsByStatus(status); // Повертає List<OrderWithItems>
-        //    return Ok(orders);
-        //}
-
-
     }
-
 
 }

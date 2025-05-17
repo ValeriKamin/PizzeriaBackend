@@ -1,9 +1,11 @@
-﻿using PizzeriaBackend.Models;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using PizzeriaBackend.Models.Cart;
+using PizzeriaBackend.Models.Orders;
+using PizzeriaBackend.Data.Interfaces;
 
-namespace PizzeriaBackend.Data
+namespace PizzeriaBackend.Data.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
@@ -59,47 +61,6 @@ namespace PizzeriaBackend.Data
             cmd.Parameters.AddWithValue("@id", orderId);
             cmd.ExecuteNonQuery();
         }
-
-        //public List<Order> GetOrdersByUser(string username)
-        //{
-        //    var orders = new List<Order>();
-
-        //    using var conn = _db.GetConnection();
-        //    conn.Open();
-
-        //    var sql = "SELECT * FROM Orders WHERE Username = @user ORDER BY CreatedAt DESC";
-        //    using var cmd = new MySqlCommand(sql, conn);
-        //    cmd.Parameters.AddWithValue("@user", username);
-
-        //    using var reader = cmd.ExecuteReader();
-        //    while (reader.Read())
-        //    {
-        //        orders.Add(new Order
-        //        {
-        //            Id = Convert.ToInt32(reader["OrderId"]),
-        //            Username = reader["Username"].ToString(),
-        //            //FullName = reader["FullName"].ToString(),
-        //            Phone = reader["Phone"].ToString(),
-        //            Email = reader["Email"].ToString(),
-        //            DeliveryType = reader["DeliveryType"].ToString(),
-        //            Address = reader["Address"].ToString(),
-        //            Apartment = reader["Apartment"].ToString(),
-        //            Entrance = reader["Entrance"].ToString(),
-        //            Floor = reader["Floor"].ToString(),
-        //            DoorCode = reader["DoorCode"].ToString(),
-        //            CourierComment = reader["CommentForCourier"].ToString(),
-        //            //DeliveryTime = reader["DeliveryTime"].ToString(),
-        //            //CardNumber = reader["CardNumber"].ToString(),
-        //            //CVM = reader["CVM"].ToString(),
-        //            //Expiry = reader["Expiry"].ToString(),
-        //            Total = Convert.ToDecimal(reader["Total"]),
-        //            Status = reader["Status"].ToString(),
-        //            //CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
-        //        });
-        //    }
-
-        //    return orders;
-        //}
 
         public List<OrderWithItems> GetOrdersByUser(string username)
         {
@@ -221,7 +182,6 @@ namespace PizzeriaBackend.Data
                 {
                     Id = Convert.ToInt32(reader["OrderId"]),
                     Username = reader["Username"].ToString(),
-                    //FullName = reader["FullName"].ToString(),
                     Phone = reader["Phone"].ToString(),
                     Email = reader["Email"].ToString(),
                     DeliveryType = reader["DeliveryType"].ToString(),
@@ -231,10 +191,6 @@ namespace PizzeriaBackend.Data
                     Floor = reader["Floor"].ToString(),
                     DoorCode = reader["DoorCode"].ToString(),
                     CourierComment = reader["CommentForCourier"].ToString(),
-                    //DeliveryTime = reader["DeliveryTime"].ToString(),
-                    //CardNumber = reader["CardNumber"].ToString(),
-                    //CVM = reader["CVM"].ToString(),
-                    //Expiry = reader["Expiry"].ToString(),
                     Total = Convert.ToDecimal(reader["Total"]),
                     Status = reader["Status"].ToString(),
                     CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
@@ -337,7 +293,7 @@ namespace PizzeriaBackend.Data
                     CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                     Status = reader["Status"].ToString(),
                     Total = Convert.ToDecimal(reader["Total"]),
-                    Items = new List<OrderItem>() // додаємо пізніше
+                    Items = new List<OrderItem>()
                 };
                 orders.Add(order);
             }

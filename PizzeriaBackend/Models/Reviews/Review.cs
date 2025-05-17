@@ -1,4 +1,4 @@
-﻿namespace PizzeriaBackend.Models
+﻿namespace PizzeriaBackend.Models.Reviews
 {
     public class Review
     {

@@ -1,8 +1,9 @@
-﻿using PizzeriaBackend.Models;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using PizzeriaBackend.Models.Cart;
+using PizzeriaBackend.Data.Interfaces;
 
-namespace PizzeriaBackend.Data
+namespace PizzeriaBackend.Data.Repositories
 {
     public class CartRepository : ICartRepository
     {

@@ -1,7 +1,8 @@
-﻿using PizzeriaBackend.Models;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
+using PizzeriaBackend.Data.Interfaces;
+using PizzeriaBackend.Models.Reviews;
 
-namespace PizzeriaBackend.Data
+namespace PizzeriaBackend.Data.Repositories
 {
     public class ReviewRepository : IReviewRepository
     {

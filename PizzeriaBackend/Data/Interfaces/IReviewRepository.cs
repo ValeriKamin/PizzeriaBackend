@@ -1,6 +1,6 @@
-﻿using PizzeriaBackend.Models;
+﻿using PizzeriaBackend.Models.Reviews;
 
-namespace PizzeriaBackend.Data
+namespace PizzeriaBackend.Data.Interfaces
 {
     public interface IReviewRepository
     {

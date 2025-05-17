@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pizzeria.Models
+namespace PizzeriaBackend.Models.Auth
 {
     public class LoginModel
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PizzeriaBackend.Data;
-using PizzeriaBackend.Models;
+using PizzeriaBackend.Data.Interfaces;
+using PizzeriaBackend.Models.Orders;
 
 namespace PizzeriaBackend.Controllers
 {

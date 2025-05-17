@@ -1,13 +1,14 @@
 ﻿using MySql.Data.MySqlClient;
 using Pizzeria.Models;
 using PizzeriaBackend.Data;
+using PizzeriaBackend.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pizzeria.Data
+namespace PizzeriaBackend.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {

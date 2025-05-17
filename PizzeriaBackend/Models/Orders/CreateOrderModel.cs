@@ -1,10 +1,11 @@
-﻿namespace PizzeriaBackend.Models
+﻿using PizzeriaBackend.Models.Cart;
+
+namespace PizzeriaBackend.Models.Orders
 {
 
     public class CreateOrderModel
     {
         public string Username { get; set; }
-        //public string FullName { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public string DeliveryType { get; set; }

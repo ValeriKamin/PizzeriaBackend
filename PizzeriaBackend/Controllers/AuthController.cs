@@ -2,13 +2,13 @@
 using Pizzeria.Data;
 using Pizzeria.Models;
 using Pizzeria.Data;
-using Pizzeria.Models;
 using System.Runtime.InteropServices;
 using Pizzeria.Helpers;
-using PizzeriaBackend.Data;
 using PizzeriaBackend.Services;
 using static PizzeriaBackend.Services.JwtService;
 using PizzeriaBackend.Models;
+using PizzeriaBackend.Models.Auth;
+using PizzeriaBackend.Data.Interfaces;
 
 namespace Pizzeria.Controllers
 {
