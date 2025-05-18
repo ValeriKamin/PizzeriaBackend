@@ -6,5 +6,6 @@ namespace PizzeriaBackend.Data.Interfaces
     {
         User? GetByUsername(string username);
         void CreateUser(User user);
+        User? GetByEmail(string email);
     }
 }

@@ -5,6 +5,7 @@ namespace PizzeriaBackend.Models.Orders
 
     public class CreateOrderModel
     {
+        public string ProfileName { get; set; }
         public string Username { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

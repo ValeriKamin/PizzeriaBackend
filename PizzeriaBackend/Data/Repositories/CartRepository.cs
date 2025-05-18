@@ -19,17 +19,36 @@ namespace PizzeriaBackend.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            var sql = @"INSERT INTO CartItems (FoodId, FoodName, Quantity, Weight, Price, Username)
-                        VALUES (@foodId, @name, @qty, @weight, @price, @user)";
-            using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@foodId", item.FoodId);
-            cmd.Parameters.AddWithValue("@name", item.FoodName);
-            cmd.Parameters.AddWithValue("@qty", item.Quantity);
-            cmd.Parameters.AddWithValue("@weight", item.Weight);
-            cmd.Parameters.AddWithValue("@price", item.Price);
-            cmd.Parameters.AddWithValue("@user", item.Username);
+            // Перевірка чи існує товар у користувача
+            var checkCmd = new MySqlCommand("SELECT * FROM CartItems WHERE Username = @user AND FoodId = @foodId", conn);
+            checkCmd.Parameters.AddWithValue("@user", item.Username);
+            checkCmd.Parameters.AddWithValue("@foodId", item.FoodId);
 
-            cmd.ExecuteNonQuery();
+            using var reader = checkCmd.ExecuteReader();
+            if (reader.Read())
+            {
+                // Якщо вже існує — оновлюємо
+                reader.Close();
+                var updateCmd = new MySqlCommand("UPDATE CartItems SET Quantity = Quantity + @qty, Price = Price + @price WHERE Username = @user AND FoodId = @foodId", conn);
+                updateCmd.Parameters.AddWithValue("@qty", item.Quantity);
+                updateCmd.Parameters.AddWithValue("@price", item.Price);
+                updateCmd.Parameters.AddWithValue("@user", item.Username);
+                updateCmd.Parameters.AddWithValue("@foodId", item.FoodId);
+                updateCmd.ExecuteNonQuery();
+            }
+            else
+            {
+                reader.Close();
+                var insertCmd = new MySqlCommand(@"INSERT INTO CartItems (FoodId, FoodName, Quantity, Weight, Price, Username)
+                                           VALUES (@foodId, @name, @qty, @weight, @price, @user)", conn);
+                insertCmd.Parameters.AddWithValue("@foodId", item.FoodId);
+                insertCmd.Parameters.AddWithValue("@name", item.FoodName);
+                insertCmd.Parameters.AddWithValue("@qty", item.Quantity);
+                insertCmd.Parameters.AddWithValue("@weight", item.Weight);
+                insertCmd.Parameters.AddWithValue("@price", item.Price);
+                insertCmd.Parameters.AddWithValue("@user", item.Username);
+                insertCmd.ExecuteNonQuery();
+            }
         }
 
         public List<CartItem> GetItemsByUser(string username)
@@ -70,6 +89,8 @@ namespace PizzeriaBackend.Data.Repositories
             cmd.Parameters.AddWithValue("@user", username);
             cmd.ExecuteNonQuery();
         }
+
+
 
 
     }

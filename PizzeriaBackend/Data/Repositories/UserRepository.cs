@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace PizzeriaBackend.Data.Repositories
 {
@@ -61,6 +62,31 @@ namespace PizzeriaBackend.Data.Repositories
             cmd.Parameters.AddWithValue("@role", user.Role);
 
             cmd.ExecuteNonQuery();
+        }
+
+        public User? GetByEmail(string email)
+        {
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            var cmd = new MySqlCommand("SELECT * FROM Users WHERE Email = @Email", conn);
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return new User
+                {
+                    UserId = Convert.ToInt32(reader["UserId"]),
+                    Username = reader["Username"].ToString(),
+                    PasswordHash = reader["PasswordHash"].ToString(),
+                    Email = reader["Email"].ToString(),
+                    PhoneNumber = reader["PhoneNumber"].ToString(),
+                    Role = reader["Role"].ToString()
+                };
+            }
+
+            return null;
         }
 
     }

@@ -25,7 +25,7 @@ namespace PizzeriaBackend.Controllers
         }
 
         [HttpGet("admin")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetAllByStatus([FromQuery] string status)
         {
             var orders = _orderRepo.GetOrdersByStatus(status);
@@ -88,7 +88,7 @@ namespace PizzeriaBackend.Controllers
             }
             else
             {
-                cartItems = _cartRepo.GetItemsByUser(model.Username);
+                cartItems = _cartRepo.GetItemsByUser(model.ProfileName);
                 if (!cartItems.Any())
                     return BadRequest(new { message = "Кошик порожній" });
             }
@@ -97,7 +97,7 @@ namespace PizzeriaBackend.Controllers
 
             var order = new Order
             {
-                Username = model.Username,
+                Username = model.ProfileName,
                 Phone = model.Phone,
                 Email = model.Email,
                 DeliveryType = model.DeliveryType,
