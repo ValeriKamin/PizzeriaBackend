@@ -14,6 +14,7 @@ namespace PizzeriaBackend.Data.Interfaces
         void AddOrderItems(int orderId, List<CartItem> items);
         List<OrderWithItems> GetOrdersWithItemsByUser(string username);
         List<OrderWithItems> GetOrdersByUser(string username);
+        List<string> GetBusyDeliveryTimes();
     }
 
 }

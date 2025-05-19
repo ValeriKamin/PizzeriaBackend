@@ -22,9 +22,9 @@ namespace PizzeriaBackend.Data.Repositories
             conn.Open();
 
             var sql = @"INSERT INTO Orders
-        (Username, Phone, Email, DeliveryType, Address, Apartment, Entrance, Floor, DoorCode, CommentForCourier, DeliveryTime, Total, Status, CreatedAt)
+        (Username, UserId, Phone, Email, DeliveryType, Address, Apartment, Entrance, Floor, DoorCode, CommentForCourier, DeliveryTime, Total, Status, CreatedAt, Name)
         VALUES
-        (@username, @phone, @email, @deliveryType, @address, @apartment, @entrance, @floor, @doorCode, @comment, @time, @total, @status, @created)";
+        (@username, @userId, @phone, @email, @deliveryType, @address, @apartment, @entrance, @floor, @doorCode, @comment, @time, @total, @status, @created, @name)";
 
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@username", order.Username);
@@ -41,6 +41,8 @@ namespace PizzeriaBackend.Data.Repositories
             cmd.Parameters.AddWithValue("@total", order.Total);
             cmd.Parameters.AddWithValue("@status", order.Status);
             cmd.Parameters.AddWithValue("@created", order.CreatedAt);
+            cmd.Parameters.AddWithValue("@name", order.Name);
+            cmd.Parameters.AddWithValue("@userId", order.UserId);
 
             cmd.ExecuteNonQuery();
             return (int)cmd.LastInsertedId;
@@ -83,7 +85,8 @@ namespace PizzeriaBackend.Data.Repositories
                     CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                     Status = reader["Status"].ToString(),
                     Total = Convert.ToDecimal(reader["Total"]),
-                    Items = new List<OrderItem>()
+                    Items = new List<OrderItem>(),
+                    DeliveryTime = reader["DeliveryTime"].ToString()
                 });
             }
             reader.Close();
@@ -138,7 +141,9 @@ namespace PizzeriaBackend.Data.Repositories
                     Total = Convert.ToDecimal(reader["Total"]),
                     Status = reader["Status"].ToString(),
                     CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-                    Items = new List<OrderItem>()
+                    Items = new List<OrderItem>(),
+                    Name = reader["Name"].ToString(),
+                    DeliveryTime = reader["DeliveryTime"].ToString()
                 };
                 orders.Add(order);
             }
@@ -193,7 +198,9 @@ namespace PizzeriaBackend.Data.Repositories
                     CourierComment = reader["CommentForCourier"].ToString(),
                     Total = Convert.ToDecimal(reader["Total"]),
                     Status = reader["Status"].ToString(),
-                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                    CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+                    DeliveryTime = reader["DeliveryTime"].ToString(),
+                    Name = reader["Name"].ToString()
                 });
             }
 
@@ -232,7 +239,9 @@ namespace PizzeriaBackend.Data.Repositories
                     Total = Convert.ToDecimal(reader["Total"]),
                     Status = reader["Status"].ToString(),
                     CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-                    Items = new List<OrderItem>()
+                    Items = new List<OrderItem>(),
+                    Name = reader["Name"].ToString(),
+                    DeliveryTime = reader["DeliveryTime"].ToString()
                 };
                 orders.Add(order);
             }
@@ -263,11 +272,20 @@ namespace PizzeriaBackend.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            foreach (var item in items)
+            var groupedItems = items
+                .GroupBy(i => i.FoodId)
+                .Select(g => new {
+                    FoodId = g.Key,
+                    FoodName = g.First().FoodName,
+                    Quantity = g.Sum(i => i.Quantity)
+                });
+
+            foreach (var item in groupedItems)
             {
-                var sql = "INSERT INTO OrderItems (OrderId, FoodName, Quantity) VALUES (@orderId, @name, @qty)";
+                var sql = "INSERT INTO OrderItems (OrderId, FoodId, FoodName, Quantity) VALUES (@orderId, @foodId, @name, @qty)";
                 using var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@orderId", orderId);
+                cmd.Parameters.AddWithValue("@foodId", item.FoodId);
                 cmd.Parameters.AddWithValue("@name", item.FoodName);
                 cmd.Parameters.AddWithValue("@qty", item.Quantity);
                 cmd.ExecuteNonQuery();
@@ -317,6 +335,24 @@ namespace PizzeriaBackend.Data.Repositories
             }
 
             return orders;
+        }
+
+        public List<string> GetBusyDeliveryTimes()
+        {
+            var times = new List<string>();
+            using var conn = _db.GetConnection();
+            conn.Open();
+
+            var cmd = new MySqlCommand("SELECT DISTINCT DeliveryTime FROM Orders", conn);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var rawValue = reader["DeliveryTime"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(rawValue))
+                times.Add(rawValue);
+            }
+
+            return times;
         }
     }
 }
