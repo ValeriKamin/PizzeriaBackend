@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Pizzeria.Controllers.AuthController">
+    <Position X="2.25" Y="1.75" Width="1.5" />
+    <Members>
+      <Method Name="AuthController" Hidden="true" />
+      <Method Name="Login" Hidden="true" />
+      <Method Name="Register" Hidden="true" />
+    </Members>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Pizzeria.Data.FoodRepository">
+    <Position X="9.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Pizzeria.Helpers.PasswordHelper">
+    <Position X="11" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Pizzeria.Models.Food">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Pizzeria.Models.User">
+    <Position X="12.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Controllers.CartController">
+    <Position X="18" Y="4.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Controllers.MenuController">
+    <Position X="9.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Controllers.OrdersController">
+    <Position X="16.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Controllers.ReviewsController">
+    <Position X="2.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Data.Database">
+    <Position X="9.25" Y="5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Data.Repositories.CartRepository" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PizzeriaBackend.Data.Repositories.FoodRepository" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PizzeriaBackend.Data.Repositories.OrderRepository" BaseTypeListCollapsed="true">
+    <Position X="4" Y="7.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PizzeriaBackend.Data.Repositories.ReviewRepository" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PizzeriaBackend.Data.Repositories.UserRepository" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Auth.LoginModel">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Auth.LoginResponse">
+    <Position X="16.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Auth.RegisterModel">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Auth.RegisterResponse">
+    <Position X="2.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Cart.AddToCartModel">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Cart.CartItem">
+    <Position X="16.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Menu.Food">
+    <Position X="18" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Orders.CreateOrderModel">
+    <Position X="14.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Orders.Order">
+    <Position X="12.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Orders.OrderWithItems">
+    <Position X="14.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Orders.OrderItem">
+    <Position X="7.5" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Orders.UpdatePriceModel">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Orders.UpdateStatusModel">
+    <Position X="16.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Reviews.Review">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Reviews.ReviewModel">
+    <Position X="11" Y="6.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Models.Reviews.ReviewResponse">
+    <Position X="11" Y="4.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Pages.IndexModel">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Pages.PrivacyModel">
+    <Position X="11" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="PizzeriaBackend.Services.JwtService" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="7.75" Width="1.5" />
+    <NestedTypes>
+      <Interface Name="PizzeriaBackend.Services.JwtService.IJwtService" Collapsed="true">
+        <TypeIdentifier />
+      </Interface>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="PizzeriaBackend.Data.Interfaces.ICartRepository" Collapsed="true">
+    <Position X="0.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="PizzeriaBackend.Data.Interfaces.IFoodRepository" Collapsed="true">
+    <Position X="2.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="PizzeriaBackend.Data.Interfaces.IOrderRepository" Collapsed="true">
+    <Position X="4" Y="6.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="PizzeriaBackend.Data.Interfaces.IReviewRepository" Collapsed="true">
+    <Position X="5.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="PizzeriaBackend.Data.Interfaces.IUserRepository" Collapsed="true">
+    <Position X="7.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -10,7 +10,7 @@ using PizzeriaBackend.Models.Auth;
 using PizzeriaBackend.Data.Interfaces;
 using System.Text.RegularExpressions;
 
-namespace Pizzeria.Controllers
+namespace PizzeriaBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -81,7 +81,7 @@ namespace Pizzeria.Controllers
             return Ok(new
             {
                 message = "Реєстрація успішна",
-                token = token
+                token
             });
         }
 

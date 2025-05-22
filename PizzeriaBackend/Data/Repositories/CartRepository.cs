@@ -19,7 +19,6 @@ namespace PizzeriaBackend.Data.Repositories
             using var conn = _db.GetConnection();
             conn.Open();
 
-            // Перевірка чи існує товар у користувача
             var checkCmd = new MySqlCommand("SELECT * FROM CartItems WHERE Username = @user AND FoodId = @foodId", conn);
             checkCmd.Parameters.AddWithValue("@user", item.Username);
             checkCmd.Parameters.AddWithValue("@foodId", item.FoodId);
@@ -27,7 +26,6 @@ namespace PizzeriaBackend.Data.Repositories
             using var reader = checkCmd.ExecuteReader();
             if (reader.Read())
             {
-                // Якщо вже існує — оновлюємо
                 reader.Close();
                 var updateCmd = new MySqlCommand("UPDATE CartItems SET Quantity = Quantity + @qty, Price = Price + @price WHERE Username = @user AND FoodId = @foodId", conn);
                 updateCmd.Parameters.AddWithValue("@qty", item.Quantity);
@@ -95,3 +93,5 @@ namespace PizzeriaBackend.Data.Repositories
 
     }
 }
+
+// ne rabotait

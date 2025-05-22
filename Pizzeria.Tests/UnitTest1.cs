@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Moq;
-using Pizzeria.Controllers;
 using Pizzeria.Models;
 using Pizzeria.Helpers;
 using PizzeriaBackend.Services;
@@ -13,8 +12,12 @@ using PizzeriaBackend.Models.Cart;
 using PizzeriaBackend.Models.Orders;
 using PizzeriaBackend.Models.Reviews;
 using PizzeriaBackend.Data.Interfaces;
+using PizzeriaBackend.Data.Repositories;
+using PizzeriaBackend.Models.Menu;
+using PizzeriaBackend;
 
-namespace Pizzeria.Tests
+
+namespace Pizzeria.Tests 
 {
     [TestFixture]
     public class AuthControllerTests
