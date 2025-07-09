@@ -1,11 +1,7 @@
-﻿using PizzeriaBackend.Models.Orders;
-using PizzeriaBackend.Models.Menu;
-namespace PizzeriaBackend.Models.Cart
-
+﻿namespace PizzeriaBackend.Models.Cart
 {
     public class CartItem
     {
-
         public int Id { get; set; }
         public int FoodId { get; set; }
         public string FoodName { get; set; }
@@ -15,7 +11,5 @@ namespace PizzeriaBackend.Models.Cart
         public string Username { get; set; }
 
         public string? Category { get; set; }
-
-
     }
 }

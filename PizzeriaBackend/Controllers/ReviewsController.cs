@@ -10,6 +10,7 @@ using PizzeriaBackend.Data.Interfaces;
 namespace PizzeriaBackend.Controllers
 {
     //[Authorize(Roles = "User")]
+    //[Authorize(Roles = "User")]
     [ApiController]
     [Route("api/[controller]")]
     public class ReviewsController : ControllerBase

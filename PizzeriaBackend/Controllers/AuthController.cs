@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pizzeria.Data;
 using Pizzeria.Models;
+using Pizzeria.Data;
 using System.Runtime.InteropServices;
 using Pizzeria.Helpers;
 using PizzeriaBackend.Services;
@@ -10,7 +11,7 @@ using PizzeriaBackend.Models.Auth;
 using PizzeriaBackend.Data.Interfaces;
 using System.Text.RegularExpressions;
 
-namespace PizzeriaBackend.Controllers
+namespace Pizzeria.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -24,6 +25,10 @@ namespace PizzeriaBackend.Controllers
             _userRepo = userRepo;
             _jwtService = jwtService;
         }
+
+        /// <summary>
+        /// Авторизація користувача
+        /// </summary>
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel model)
         {
@@ -44,6 +49,9 @@ namespace PizzeriaBackend.Controllers
             });
         }
 
+        /// <summary>
+        /// Реєстрація нового користувача
+        /// </summary>
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterModel model)
         {
@@ -81,7 +89,7 @@ namespace PizzeriaBackend.Controllers
             return Ok(new
             {
                 message = "Реєстрація успішна",
-                token
+                token = token
             });
         }
 

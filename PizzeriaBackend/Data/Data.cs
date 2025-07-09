@@ -4,6 +4,7 @@ using PizzeriaBackend.Data;
 
 namespace Pizzeria.Data
 {
+    //[Authorize(Roles = "User")]
     public class FoodRepository
     {
         private readonly Database _db;

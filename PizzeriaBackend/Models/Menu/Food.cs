@@ -1,7 +1,4 @@
-﻿using PizzeriaBackend.Models.Cart;
-using PizzeriaBackend.Models.Reviews;
-
-namespace PizzeriaBackend.Models.Menu
+﻿namespace PizzeriaBackend.Models.Menu
 {
     public class Food
     {
@@ -11,6 +8,5 @@ namespace PizzeriaBackend.Models.Menu
         public double? Weight { get; set; }
         public decimal Price { get; set; }
         public string? Category { get; set; }
-
     }
 }

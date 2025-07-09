@@ -1,9 +1,5 @@
-﻿using Pizzeria.Models;
-using PizzeriaBackend.Models.Cart;
-
-namespace PizzeriaBackend.Models.Orders
+﻿namespace PizzeriaBackend.Models.Orders
 {
-
     public class Order
     {
         public int Id { get; set; }
@@ -27,9 +23,6 @@ namespace PizzeriaBackend.Models.Orders
         public decimal Total { get; set; }
         public string Status { get; set; } 
         public DateTime CreatedAt { get; set; }
-
-        public User User { get; set; }
-        public List<CartItem> Items { get; set; }
     }
 
     public class OrderWithItems
@@ -53,9 +46,6 @@ namespace PizzeriaBackend.Models.Orders
         public string DeliveryTime { get; set; }
 
         public int UserId { get; set; }
-
-
-
     }
 
 
@@ -66,8 +56,5 @@ namespace PizzeriaBackend.Models.Orders
         public int Quantity { get; set; }
         public int OrderId { get; set; }
         public int FoodId { get; set; }
-
-        public User User { get; set; }
-        public List<CartItem> Items { get; set; }
     }
 }
